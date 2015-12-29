@@ -3,27 +3,37 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.Window;
 
 public class ScreenDimension {
 
-	private Toolkit kit;
-	private Dimension scr_size;
-	private int dpi;
-	private GraphicsDevice device;
+	private static Toolkit kit = Toolkit.getDefaultToolkit();
+	private static Dimension scr_size = kit.getScreenSize();
+	private static int dpi = kit.getScreenResolution();
+	private static GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	
-	public ScreenDimension(){
-		this(Toolkit.getDefaultToolkit(),GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice());
-	}
-	
-	public ScreenDimension(Toolkit kit, GraphicsDevice device){
-		this.kit = kit;
+	public static void setDefault(Toolkit kit, GraphicsDevice device){
+		ScreenDimension.kit = kit;
 		scr_size = kit.getScreenSize();
 		dpi = kit.getScreenResolution();
-		this.device = device;
+		ScreenDimension.device = device;
 	}
 	
-	public Dimension getVisibleSpace(){
+	public static Dimension getVisibleSpace(){
 		Insets insets = kit.getScreenInsets(device.getDefaultConfiguration());
 		return new Dimension(scr_size.width - insets.left - insets.right, scr_size.height - insets.top - insets.bottom);
+	}
+	
+	public static Dimension getDimension(int winch, int hinch){
+		return new Dimension(winch*dpi, hinch*dpi);
+	}
+	
+	/**
+	 * This method should be call after the window is visible and has its size defined. 
+	 */
+	public static void centerWindow(Window win){
+		Dimension scr = getVisibleSpace();
+		Dimension size = win.getSize();
+		win.setLocation((scr.width-size.width)/2, (scr.height-size.height)/2);
 	}
 }

@@ -6,21 +6,16 @@ import java.awt.Toolkit;
 
 public class Main {
 
-	public static Dimension scr_size = Toolkit.getDefaultToolkit().getScreenSize();
+	
 	public static void main(String[] args) {
 		
-		getVisibleSpace();
+		Dimension space = getVisibleSpace();
 		
 		Frame mainfr = new Frame("Titile");
+		mainfr.setMinimumSize(new Dimension(800,600));
 		
 	}
 	
-	public static Dimension getVisibleSpace(){
-		Toolkit kit = Toolkit.getDefaultToolkit();		
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		
-		Insets insets = kit.getScreenInsets(ge.getDefaultScreenDevice().getDefaultConfiguration());
-		return new Dimension(scr_size.width - insets.left - insets.right, scr_size.height - insets.top - insets.bottom);
-	}
+	
 
 }

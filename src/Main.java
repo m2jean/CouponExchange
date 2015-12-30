@@ -1,16 +1,39 @@
+import java.awt.Button;
+import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Panel;
+import java.awt.TextField;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Main {
 
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 				
 		Frame mainfr = new Frame("CouponExchangeSystem");
 		mainfr.setMinimumSize(new Dimension(800,600));
@@ -31,11 +54,52 @@ public class Main {
 				ScreenDimension.centerWindow(mainfr);
 			}
 		});
-		
+		Panel pnl = createFileChooser();
+		mainfr.add(pnl);
 		
 		mainfr.setVisible(true);
 	}
 	
-	
+	private static Panel createFileChooser(){
+
+		Panel pnl = new Panel();
+		TextField txtfld = new TextField();
+		txtfld.setColumns(40);
+		pnl.add(txtfld);
+		Button btn_brs = new Button("Browse");
+		pnl.add(btn_brs);
+		Button btn_chs = new Button("Choose");
+		pnl.add(btn_chs);
+		
+		btn_brs.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(
+						"Images(jpeg,png,gif,bmp,webp)","jpeg", "jpg", "png", "gif", "bmp", "webp");
+				fc.setFileFilter(filter);
+				int returnVal = fc.showOpenDialog(pnl);
+				if(returnVal == JFileChooser.APPROVE_OPTION) {
+					txtfld.setText(fc.getSelectedFile().getAbsolutePath());
+				}
+
+			}
+		});
+
+		btn_chs.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Image img = ImageIO.read(new File(txtfld.getText().trim()));
+				} catch (IOException e1) {
+					e1.printStackTrace();
+					return;
+				}
+			}
+		});
+		
+		return pnl;
+	}
 
 }

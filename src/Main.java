@@ -70,6 +70,10 @@ public class Main {
 		pnl.add(btn_brs);
 		Button btn_chs = new Button("Choose");
 		pnl.add(btn_chs);
+		Canvas cvs = new Canvas();
+		cvs.setPreferredSize(new Dimension(600,200));
+		
+		pnl.add(cvs);
 		
 		btn_brs.addActionListener(new ActionListener(){
 			@Override
@@ -90,16 +94,33 @@ public class Main {
 		btn_chs.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Image img;
 				try {
-					Image img = ImageIO.read(new File(txtfld.getText().trim()));
+					img = ImageIO.read(new File(txtfld.getText().trim()));
 				} catch (IOException e1) {
 					e1.printStackTrace();
 					return;
 				}
+				int cvs_width = cvs.getWidth();
+				int cvs_height = cvs.getHeight();
+				Graphics g = cvs.getGraphics();
+				//g.drawRect(0, 0, cvs_width, cvs_height);
+				g.drawImage(stretchInto(img, cvs_width, cvs_height), 0, 0, null);
 			}
 		});
 		
 		return pnl;
+	}
+	
+	public static Image stretchInto(Image img, int width, int height){
+		double widthp = img.getWidth(null)/(double)width;
+		double heightp = img.getHeight(null)/(double)height;
+		if(widthp > heightp){
+			return img.getScaledInstance(width, (int) (height*heightp/widthp), Image.SCALE_SMOOTH);
+		}
+		else{
+			return img.getScaledInstance((int) (width*widthp/heightp), height, Image.SCALE_SMOOTH);
+		}
 	}
 
 }
